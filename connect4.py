@@ -1,3 +1,8 @@
+# needs to be 9x7 grid size
+# add valid moves function
+# alpha-beta pruning algorithm 
+
+
 from games import *
 
 class ConnectFour(TicTacToe):
