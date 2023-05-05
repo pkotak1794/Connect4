@@ -4,7 +4,7 @@
 
 
 from games import *
-from games import alpha_beta_player
+#from games import alpha_beta_player
 #import copy
 
 class GameState:
@@ -34,19 +34,23 @@ class Connect4(Game):
         return [(row, col) for row in range(self.rows) for col in range(self.cols)
             if state.board[(row, col)] == "." and (row == self.rows - 1 or state.board[(row+1, col)] != ".")]
 
-    def result(self, state, col):
-        move = (max(row for row in range(self.rows) if state.board[(row, col)] == "."), col)
-        if move not in self.actions(state):
+    def result(self, state, row=None, col=None):
+        if col not in range(self.cols):
+            return state
+        # find the lowest unoccupied row in the given column
+        for r in range(self.rows-1, -1, -1):
+            if state.board[(r, col)] == ".":
+                break
+        else: # column is full
             return state
         player = state.to_move
         new_board = copy.deepcopy(state.board)
-        new_board[move] = player
-        new_moves = state.moves + [move]
+        new_board[(r, col)] = player
+        new_moves = state.moves + [(r, col)]
         new_to_move = 'O' if player == 'X' else 'X'
-        new_state = GameState(to_move=new_to_move, utility=self.compute_utility(new_board, move, player),
-                  board=new_board, moves=new_moves)
-        return new_state if move is not None else state
-
+        new_state = GameState(to_move=new_to_move, utility=self.compute_utility(new_board, (r, col), player),
+                              board=new_board, moves=new_moves)
+        return new_state
 
     def compute_utility(self, board, move, player):
         if move is None:
@@ -84,12 +88,6 @@ class Connect4(Game):
                 print(board[(row, col)], end=" | ")
             print("")
 
-#c4 = Connect4()
-
-# Set the initial state for the game
-# Set the initial state for the game
-#board = {(row, col): "." for row in range(c4.rows) for col in range(c4.cols)}
-#c4.initial = GameState(to_move='X', utility=c4.compute_utility(board, None, 'X'), board=board, moves=[])
 
 if __name__ == "__main__":
     c4 = Connect4()
@@ -100,7 +98,7 @@ if __name__ == "__main__":
         c4.display(state)
         if state.to_move == 'X':
             col = int(input("Enter column: "))
-            state = c4.result(state, col)
+            state = c4.result(state, row=None,col=col)
         else:
             state = alpha_beta_player(state, c4)
     c4.display(state)
