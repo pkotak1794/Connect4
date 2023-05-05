@@ -4,7 +4,8 @@
 
 
 from games import *
-import copy
+from games import alpha_beta_player
+#import copy
 
 class GameState:
     def __init__(self, to_move, utility, board, moves=None):
@@ -33,20 +34,23 @@ class Connect4(Game):
         return [(row, col) for row in range(self.rows) for col in range(self.cols)
             if state.board[(row, col)] == "." and (row == self.rows - 1 or state.board[(row+1, col)] != ".")]
 
-    def result(self, state, row, col):
-        move = (row, col)
+    def result(self, state, col):
+        move = (max(row for row in range(self.rows) if state.board[(row, col)] == "."), col)
         if move not in self.actions(state):
             return state
         player = state.to_move
         new_board = copy.deepcopy(state.board)
-        new_board[(row, col)] = player
+        new_board[move] = player
         new_moves = state.moves + [move]
         new_to_move = 'O' if player == 'X' else 'X'
         new_state = GameState(to_move=new_to_move, utility=self.compute_utility(new_board, move, player),
-                          board=new_board, moves=new_moves)
-        return new_state
+                  board=new_board, moves=new_moves)
+        return new_state if move is not None else state
+
 
     def compute_utility(self, board, move, player):
+        if move is None:
+            return None
         print(f"move: {move}")
         directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
         row, col = move
@@ -64,9 +68,10 @@ class Connect4(Game):
                 count += 1
             if count >= self.win_length:
                 return 1 if player == 'X' else -1
-        if all(board[(r, c)] != '.' for r in range(self.rows) for c in range(self.cols)):
-            return 0
-        return None
+            if all(board[(r, c)] != '.' for r in range(self.rows) for c in range(self.cols)):
+                return 0
+            else:
+                return None
 
     def terminal_test(self, state):
         return state.utility is not None
@@ -79,24 +84,31 @@ class Connect4(Game):
                 print(board[(row, col)], end=" | ")
             print("")
 
-c4 = Connect4()
+#c4 = Connect4()
+
 # Set the initial state for the game
-c4.initial = GameState(to_move='X', utility=0, board={}, moves=[])
-for row in range(c4.rows):
-    for col in range(c4.cols):
-        c4.initial.board[(row, col)] = "."
+# Set the initial state for the game
+#board = {(row, col): "." for row in range(c4.rows) for col in range(c4.cols)}
+#c4.initial = GameState(to_move='X', utility=c4.compute_utility(board, None, 'X'), board=board, moves=[])
 
 if __name__ == "__main__":
+    c4 = Connect4()
+    board = {(row, col): "." for row in range(c4.rows) for col in range(c4.cols)}
+    c4.initial = GameState(to_move='X', utility=c4.compute_utility(board, None, 'X'), board=board, moves=[])
     state = c4.initial
     while not c4.terminal_test(state):
         c4.display(state)
         if state.to_move == 'X':
-            row = int(input("Enter row: "))
             col = int(input("Enter column: "))
-            state = c4.result(state, row, col)
+            state = c4.result(state, col)
         else:
-            state = alphabeta_player(state, c4)
+            state = alpha_beta_player(state, c4)
     c4.display(state)
-    print("Game over. Utility value: ", state.utility)
-
+    utility = c4.compute_utility(state.board, None, state.to_move)
+    if utility == 1:
+        print("You won!")
+    elif utility == -1:
+        print("You lost!")
+    else:
+        print("Draw!")
 
