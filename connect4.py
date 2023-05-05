@@ -18,10 +18,7 @@ class Connect4(Game):
         self.cols = 9
         self.rows = 7
         self.win_length = 4
-        self.board = {}
-        for row in range(self.rows):
-            for col in range(self.cols):
-                self.board[(row, col)] = "."
+        self.board = {(row, col): "." for row in range(self.rows) for col in range(self.cols)}
         self.initial = GameState(to_move='X', utility=0, board=self.board, moves=[])
 
     def to_game(self, state):
@@ -34,64 +31,42 @@ class Connect4(Game):
     
     def actions(self, state):
         return [(row, col) for row in range(self.rows) for col in range(self.cols)
-                if state.board[(row, col)] == "."]
+            if state.board[(row, col)] == "." and (row == self.rows - 1 or state.board[(row+1, col)] != ".")]
 
-    def result(self, state, move):
+    def result(self, state, row, col):
+        move = (row, col)
         if move not in self.actions(state):
             return state
-        row, col = move
         player = state.to_move
         new_board = copy.deepcopy(state.board)
         new_board[(row, col)] = player
         new_moves = state.moves + [move]
         new_to_move = 'O' if player == 'X' else 'X'
         new_state = GameState(to_move=new_to_move, utility=self.compute_utility(new_board, move, player),
-                              board=new_board, moves=new_moves)
+                          board=new_board, moves=new_moves)
         return new_state
 
     def compute_utility(self, board, move, player):
+        print(f"move: {move}")
         directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
         row, col = move
         for d in directions:
             count = 1
             for i in range(1, self.win_length):
-                r, c = vector_add((row, col), (d[0]*i, d[1]*i))
-                if (r, c) in board and board[(r, c)] == player:
-                    count += 1
-                else:
+                r, c = row + d[0]*i, col + d[1]*i
+                if r < 0 or r >= self.rows or c < 0 or c >= self.cols or board[(r, c)] != player:
                     break
+                count += 1
             for i in range(1, self.win_length):
-                r, c = vector_add((row, col), (-d[0]*i, -d[1]*i))
-                if (r, c) in board and board[(r, c)] == player:
-                    count += 1
-                else:
+                r, c = row - d[0]*i, col - d[1]*i
+                if r < 0 or r >= self.rows or c < 0 or c >= self.cols or board[(r, c)] != player:
                     break
+                count += 1
             if count >= self.win_length:
                 return 1 if player == 'X' else -1
         if all(board[(r, c)] != '.' for r in range(self.rows) for c in range(self.cols)):
             return 0
         return None
-
-    def utility(state, player, alpha_beta=None):
-        board = state.board
-        game = Connect4().to_game(state)
-        for row in range(game.rows):
-            for col in range(game.cols):
-                if board[(row, col)] == '.':
-                    continue
-                for dr, dc in ((0, 1), (1, 0), (1, 1), (1, -1)):
-                    r, c = row, col
-                    seq = ''
-                    while (0 <= r < game.rows and 0 <= c < game.cols and board[(r, c)] == board[(row, col)]):
-                        seq += board[(r, c)]
-                        r, c = r + dr, c + dc
-                    if len(seq) >= game.win_length:
-                        if seq[0] == player:
-                            return 1
-                        else:
-                            return -1
-        return 0
-
 
     def terminal_test(self, state):
         return state.utility is not None
@@ -112,16 +87,16 @@ for row in range(c4.rows):
         c4.initial.board[(row, col)] = "."
 
 if __name__ == "__main__":
-    c4 = Connect4()
-    # Set the initial state for the game
-    c4.initial = GameState(to_move='X', utility=0, board={}, moves=[])
-    for row in range(c4.rows):
-        for col in range(c4.cols):
-            c4.initial.board[(row, col)] = "."
-    print(c4.initial.board)
-    print(c4.initial.moves)
-    # play the game using alpha-beta pruning algorithm
-    utility = c4.play_game(alpha_beta_player, alpha_beta_player)
-    print("Game over. Utility: ", utility)
+    state = c4.initial
+    while not c4.terminal_test(state):
+        c4.display(state)
+        if state.to_move == 'X':
+            row = int(input("Enter row: "))
+            col = int(input("Enter column: "))
+            state = c4.result(state, row, col)
+        else:
+            state = alphabeta_player(state, c4)
+    c4.display(state)
+    print("Game over. Utility value: ", state.utility)
 
 
