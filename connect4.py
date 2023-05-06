@@ -3,9 +3,12 @@
 # alpha-beta pruning algorithm 
 
 
-from games import *
-#from games import alpha_beta_player
-#import copy
+from games import GameState
+from games import alpha_beta_player
+from games import ConnectFour
+from games import Game
+import copy
+
 
 class GameState:
     def __init__(self, to_move, utility, board, moves=None):
@@ -14,7 +17,7 @@ class GameState:
         self.board = board
         self.moves = moves or []
 
-class Connect4(Game):
+class ConnectFour(Game):
     def __init__(self):
         self.cols = 9
         self.rows = 7
@@ -23,7 +26,7 @@ class Connect4(Game):
         self.initial = GameState(to_move='X', utility=0, board=self.board, moves=[])
 
     def to_game(self, state):
-        game = Connect4()
+        game = ConnectFour()
         game.cols = self.cols
         game.rows = self.rows
         game.win_length = self.win_length
@@ -80,6 +83,9 @@ class Connect4(Game):
     def terminal_test(self, state):
         return state.utility is not None
 
+    def to_move(self, state):
+        return state.to_move
+
     def display(self, state):
         board = state.board
         for row in range(self.rows):
@@ -90,7 +96,8 @@ class Connect4(Game):
 
 
 if __name__ == "__main__":
-    c4 = Connect4()
+    c4 = ConnectFour()
+    print(c4)
     board = {(row, col): "." for row in range(c4.rows) for col in range(c4.cols)}
     c4.initial = GameState(to_move='X', utility=c4.compute_utility(board, None, 'X'), board=board, moves=[])
     state = c4.initial
@@ -109,4 +116,3 @@ if __name__ == "__main__":
         print("You lost!")
     else:
         print("Draw!")
-
