@@ -1,7 +1,7 @@
 # CPSC 481 - Artificial Intelligence 
 # Xuan Bui, Priyanka Lee, & Tiffany Tran
 
-# Connect4 game against an AI player on a 9x7 grid size board
+# Connect4 game against an AI or human player on a 9x7 grid size board
 # using alpha-beta pruning algorithm & show player valid moves
 
 #from games import ConnectFour, alpha_beta_player, GameState, Game
