@@ -1,6 +1,8 @@
-# needs to be 9x7 grid size
-# add valid moves function
-# alpha-beta pruning algorithm 
+# CPSC 481 - Artificial Intelligence 
+# Xuan Bui, Priyanka Lee, & Tiffany Tran
+
+# Connect4 game against an AI player on a 9x7 grid size board
+# using alpha-beta pruning algorithm & show player valid moves
 
 #from games import ConnectFour, alpha_beta_player, GameState, Game
 import copy
@@ -12,8 +14,9 @@ class GameState:
         self.player_to_move = player_to_move # tracks turn of player/opponent with a string
         self.utility = utility # keeps score of game (1 = player win, -1 = player loss, 0 = draw)
         self.board = board  # current board state
-        self.moves = moves or []
+        self.moves = moves or [] # empty list if no value for moves
 
+    # track whose turn it is    
     def to_move(self):
         return self.player_to_move
 
