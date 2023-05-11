@@ -98,7 +98,7 @@ class ConnectFour(Game):
                 return 1 if player == 'X' else -1
         if all(board[(r, c)] != '.' for r in range(self.rows) for c in range(self.cols)):   # if the game results in a tie
             return 0
-        return 0    # if this line is changed to return None it causes infinite recursion but causes automatic Draw as is
+        return None    # if this line is changed to return None it causes infinite recursion but causes automatic Draw as is
 
     # checks to see if the game is still in progress or completed 
     def terminal_test(self, state):
@@ -121,18 +121,46 @@ if __name__ == "__main__":
     board = {(row, col): "." for row in range(game.rows) for col in range(game.cols)}
     game.initial = GameState(player_to_move='X', utility=game.compute_utility(board, None, 'X'), board=board, moves=[])
     state = game.initial
+    player_choice = input("Would you like to play against a human player (H) or against an AI opponent (A)? ").upper()
+    while player_choice not in ["H", "A"]:
+        player_choice = input("Invalid choice. Please enter H or A only: ").upper()
     while not game.terminal_test(state):
         game.display(state)
         if state.to_move() == 'X':
-            col = int(input("Enter a column number: "))
-            state = game.result(state, row=None,col=col)
+            col = int(input("Player X's turn. Enter a column number: "))
+            state = game.result(state, row=None, col=col)
         else:
-            state = alpha_beta_player(game, state)
+            if player_choice == "H":
+                col = int(input("Player O's turn. Enter a column number: "))
+                state = game.result(state, row=None, col=col)
+            else:
+                state = alpha_beta_player(game, state)
+        if not game.terminal_test(state):
+            game.display(state)
+            if state.to_move() == 'X':
+                if player_choice == "H":
+                    col = int(input("Player X's turn. Enter a column number: "))
+                    state = game.result(state, row=None, col=col)
+                else:
+                    state = alpha_beta_player(game, state)
+            else:
+                if player_choice == "H":
+                    col = int(input("Player O's turn. Enter a column number: "))
+                    state = game.result(state, row=None, col=col)
+                else:
+                    state = alpha_beta_player(game, state)
     game.display(state)
     utility = game.compute_utility(state.board, None, state.to_move)
     if utility == 1:
-        print("Congratulations! You won!")
+        if player_choice == "H":
+            print("Congratulations! Player X won!")
+        else:
+            print("Sorry, you lost...")
     elif utility == -1:
-        print("Awww, you lost...")
+        if player_choice == "H":
+            print("Congratulations! Player O won!")
+        else:
+            print("Congratulations! You won!")
     else:
         print("It's a Draw.")
+
