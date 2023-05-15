@@ -199,7 +199,7 @@ def random_player(game, state):
 
 
 def alpha_beta_player(game, state):
-    return alpha_beta_search(state, game)
+    return alpha_beta_cutoff_search(state, game)
 
 
 def minmax_player(game,state):
