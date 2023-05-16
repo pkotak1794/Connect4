@@ -6,7 +6,7 @@ This project is an implementation of Connect4 game that allows the user to play 
 ## Program Features 
 - Larger game board-- 9x7 size
 - Uses alpha-beta pruning (with cutoff) for efficiency
-- Two gameplay modes: 
+- Two gameplay modes: <br>
   player vs player <br>
   player vs AI opponent
 - Command line interface
@@ -26,10 +26,10 @@ This project is an implementation of Connect4 game that allows the user to play 
 ## Technical Details 
 - Written in Python code 
 - All game implementation is done in connect4.py but requires downloading games.py & utils.py in the same directory
-- Run command: 
+- Run command: <br>
   cd Connect4 <br>
   python3 connect4.py 
   
  ## Acknowledgments
- This project builds upon the original code from AIMA Python Code repository. 
+ This project builds upon the original code from AIMA Python Code repository. <br>
  https://github.com/aimacode/aima-python
