@@ -7,7 +7,7 @@ This project is an implementation of Connect4 game that allows the user to play 
 - Larger game board-- 9x7 size
 - Uses alpha-beta pruning (with cutoff) for efficiency
 - Two gameplay modes: 
-  player vs player
+  player vs player <br>
   player vs AI opponent
 - Command line interface
 - AI uses evaluation function for optimality
@@ -27,7 +27,7 @@ This project is an implementation of Connect4 game that allows the user to play 
 - Written in Python code 
 - All game implementation is done in connect4.py but requires downloading games.py & utils.py in the same directory
 - Run command: 
-  cd Connect4
+  cd Connect4 <br>
   python3 connect4.py 
   
  ## Acknowledgments
