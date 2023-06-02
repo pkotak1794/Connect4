@@ -32,4 +32,5 @@ This project is an implementation of Connect4 game that allows the user to play 
   
  ## Acknowledgments
  This project builds upon the original code from AIMA Python Code repository. <br>
- https://github.com/aimacode/aima-python
+ https://github.com/aimacode/aima-python <br>
+ The games.py & utils.py are credited to the AIMA code. 
