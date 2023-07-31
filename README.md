@@ -1,4 +1,4 @@
-# CPSC 481 - Artificial Intelligence - Final Project 
+# Artificial Intelligence - Final Project 
 
 This project is an implementation of Connect4 game that allows the user to play against human or AI opponent. 
 
